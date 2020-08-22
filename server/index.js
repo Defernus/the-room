@@ -5,7 +5,7 @@ const http = require('http');
 const PORT = process.env.PORT || 2000
 
 const router = require('./router');
-const {createRoom, getRoom, deleteRoom} = require('./rooms');
+const {createRoom, getRoom, deleteRoom, getRoomByUserID} = require('./rooms');
 
 const app = express();
 const server = http.createServer(app);
@@ -17,26 +17,51 @@ io.on('connection', (socket) => {
 	
 	console.log(`user ${socket.id} connected`);
 
-	socket.on('join', ({ room_id, user }, cb) => {
-		let { err, room } = getRoom(room_id);
+	socket.on('join', ({ room_id, user_name }, cb) => {
+		if(!user_name) {
+			return cb({err: `user name is ${user_name}`});
+		}
+
+		room = getRoom(room_id);
+
+		if(!room) {
+			return cb({ err: `could not find room witch id ${room_id}` });
+		}
+
+		err = room.addUser({ name: user_name, id: socket.id });
 
 		if(err) {
 			return cb({ err });
 		}
 
-		err = room.addUser(user);
+		socket.join(room_id);
 
-		if(err) {
-			return cb({ err });
-		}
-
-		console.log(`new user ${user} has been added to room ${room}`);
+		console.log(`new user ${user_name} has been added to room ${room.name}`);
 
 		cb({ room_name:room.name });
 	});
 
+	socket.on('sendMessage', ({ text }, cb) => {
+		let { err, room } = getRoomByUserID(socket.id);
+
+		if(err) {
+			return cb(err);
+		}
+
+		user = room.users.get(socket.id);
+		if(!user) {//it will newer happened, but just in case...
+			throw `could not find user with id ${socket.id} in the room ${room.id}`;
+		}
+
+		io.in(room.id).emit('message', { from: user.name, text });
+
+		console.log(`message from user ${user.name} at room ${room.name}: ${text}`);
+
+		cb();
+	});
+
 	socket.on('create-room', ({ room_name }, cb) => {
-		const { err, room_id } = createRoom(room_name);
+		let { err, room_id } = createRoom(room_name);
 
 		if(err) {
 			return cb({ err });

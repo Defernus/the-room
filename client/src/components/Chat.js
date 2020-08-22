@@ -25,9 +25,9 @@ const Chat = ({location}) => {
 	
 		socket = io(SOCKET_ENDPOINT);
 
-		socket.emit('join', {room_id, user:{name, id:socket.id}}, ({err, room_name}) => {
+		socket.emit('join', { room_id, user_name: name }, ({err, room_name}) => {
 			if(err) {
-				//TODO handle errors, like redirect to somewher when room doesn`t found or name is alredy used
+				//TODO handle errors e.g. redirect to somewher when room doesn`t found or name is alredy used
 				alert(err);
 				return;
 			}
@@ -36,9 +36,23 @@ const Chat = ({location}) => {
 		});
 	}, [location.search]);
 
+	useEffect( () => {
+		socket.off('message');
+		socket.on('message', message => {
+			console.log(message);
+			setMessages([...messages, message]); 
+		});
+	}, [messages]);
+
 	const sendMessage = event => {
-		console.log(message);
-		setMessages([...messages, message]);
+		socket.emit('sendMessage', { text: message.text }, err => {
+			if(err) {
+				//TODO handle errors
+				alert(err);
+				return;
+			}
+		});
+
 		setMessage('');
 		document.getElementById('message-input').value='';
 	};
@@ -56,7 +70,7 @@ const Chat = ({location}) => {
 			</div>
 			<div className='room-message-editor'>
 				<form className='form-message'>
-					<input className='form-message-input input-left' id='message-input' type='text' placeholder='Enter message' onChange={event => setMessage({user:name, text:event.target.value})} />
+					<input className='form-message-input input-left' id='message-input' type='text' placeholder='Enter message' onChange={event => setMessage({ from: name, text: event.target.value })} />
 					<button className='form-submit form-bottom' type='submit' onClick={event => {
 						event.preventDefault();
 						sendMessage(event);

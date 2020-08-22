@@ -9,20 +9,26 @@ const createRoom = room_name => {
 	const room_id = `${++last_id}`;
 	let i = 0;
 
-	rooms.set(room_id, new Room(room_name));
+	rooms.set(room_id, new Room(room_name, room_id));
 
 	return {room_id};
-}
-
-const deleteRoom = room_id => {
-	const success = rooms.delete(room_id);
-	return success ? {err:null} : {err:`room with id ${room_id} does not exist`};
 };
 
 const getRoom = room_id => {
-	const room = rooms.get(room_id);
-	return room ? {room} : {err:`room with id ${room_id} does not exist`};
+	return rooms.get(room_id);
+}
+
+const deleteRoom = room_id => {
+	return rooms.delete(room_id);
+}
+
+const getRoomByUserID = user_id => {
+	const room = [...rooms.entries()].find(r => {
+		const user = r[1].users.get(user_id);
+		return Boolean(user);
+	});
+	return room ? { room:room[1] } : { err: `could not find such room` };
 };
 
 
-module.exports = {createRoom, deleteRoom, getRoom};
+module.exports = {createRoom, getRoom, deleteRoom, getRoomByUserID};
