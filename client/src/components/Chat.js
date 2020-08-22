@@ -1,25 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import queryString from 'query-string';
+import io from 'socket.io-client';
 
+import SOCKET_ENDPOINT from './Endpoint'
 import Message from './Message'
 
 import './Chat.css'
 
-const SOCKET_ENDPOINT = "defernus.com:2525"
+let socket;
 
 const Chat = ({location}) => {
 	const [name, setName] = useState('');
-	const [room, setRoom] = useState('');
+	const [room_id, setRoomID] = useState('');
+	const [room_name, setRoomName] = useState('');
 
 	const [message, setMessage] = useState('');
 	const [messages, setMessages] = useState([]);
 
 	useEffect(() => {
-		const {name, room} = queryString.parse(location.search);
+		const {room_id, name} = queryString.parse(location.search);
 
 		setName(name);
-		setRoom(room);
+		setRoomID(room_id);
 	
+		socket = io(SOCKET_ENDPOINT);
+
+		socket.emit('join', {room_id, user:{name, id:socket.id}}, ({err, room_name}) => {
+			if(err) {
+				//TODO handle errors, like redirect to somewher when room doesn`t found or name is alredy used
+				alert(err);
+				return;
+			}
+
+			setRoomName(room_name);
+		});
 	}, [location.search]);
 
 	const sendMessage = event => {
@@ -32,7 +46,7 @@ const Chat = ({location}) => {
 	return (
 		<div className='room-container'>
 			<div className='room-info'>
-				<h1>{room} {name}</h1>
+				<h1>{room_name} {name}</h1>
 			</div>
 
 			<div className='room-messages'>
