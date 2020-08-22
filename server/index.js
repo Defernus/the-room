@@ -18,6 +18,7 @@ io.on('connection', (socket) => {
 	console.log(`user ${socket.id} connected`);
 
 	socket.on('join', ({ room_id, user_name }, cb) => {
+		//TODO check user name
 		if(!user_name) {
 			return cb({err: `user name is ${user_name}`});
 		}
@@ -37,11 +38,25 @@ io.on('connection', (socket) => {
 		socket.join(room_id);
 
 		console.log(`new user ${user_name} has been added to room ${room.name}`);
+		
+		io.in(room_id).emit('message', { from: room.name, text: `Welcome, ${user_name}!` });
 
 		cb({ room_name:room.name });
 	});
 
+	socket.on('roomName', (id, cb) => {
+		const room = getRoom(id);
+		if(!room) {
+			return cb({ err: `could not find room witch id ${id}` });
+		}
+		cb({ name: room.name });
+	});
+
 	socket.on('sendMessage', ({ text }, cb) => {
+		if(!text) {
+			return cb({ err: `message is empty` });
+		}
+
 		let { err, room } = getRoomByUserID(socket.id);
 
 		if(err) {
@@ -61,6 +76,11 @@ io.on('connection', (socket) => {
 	});
 
 	socket.on('create-room', ({ room_name }, cb) => {
+		//TODO check room name
+		if(!room_name) {
+			cb({ err: `empty room name` });
+		}
+
 		let { err, room_id } = createRoom(room_name);
 
 		if(err) {

@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import io from 'socket.io-client';
+import { Redirect } from 'react-router-dom';
+
+import Logo from './the-room.svg';
 
 import SOCKET_ENDPOINT from './Endpoint'
-
-import './Start.css'
 
 let socket;
 
 const Start = () => {
 	const [name, setName] = useState('');
 	const [room, setRoom] = useState('');
+	const [redirect, setRedirect] = useState('');
 
 	useEffect(() => {
 		socket = io(SOCKET_ENDPOINT);
@@ -23,6 +25,10 @@ const Start = () => {
 
 	const createRoom = event => {
 		event.preventDefault();
+
+		if(!name) {
+			return;
+		}
 
 		//TODO handle invalid params
 		if( !isValid(name) ) {
@@ -42,20 +48,31 @@ const Start = () => {
 				return;
 			}
 
-			alert(`room was successfully created, now You join it with https://defernus.com:3535/chat-room?room_id=${room_id}&name=${name}`);
-			console.log(room_id, name)
+			
+			console.log(room_id, name);
+			setRedirect(`/chat-room?room_id=${room_id}&name=${name}`);
 		});
 
 
 	}
 
+	if(redirect) {
+		return (
+			<Redirect to={redirect} />
+		);
+	}
+	
 	return (
-		<form className='form-signin'>
-			<input className='form-input-text form-input-top' type='text' placeholder='Your name' onChange={event => setName(event.target.value)} />
-			<input className='form-input-text form-input-middle' type='text' placeholder='Room name' onChange={event => setRoom(event.target.value)}  />
-			
-			<button className='form-submit form-bottom' type='submit' onClick={createRoom}>Create room</button>
-		</form>
+		<div className='container-center'>
+			<form className='form-signin'>
+				<img className='form-logo' src={Logo} alt='The Room logo' />
+				<h1 className='form-label'>Create The Room!</h1>
+				<input className='form-input-text form-input-top' type='text' placeholder='Your name' onChange={event => setName(event.target.value)} />
+				<input className='form-input-text form-input-middle' type='text' placeholder='Room name' onChange={event => setRoom(event.target.value)}  />
+				
+				<button className='form-submit form-bottom' type='submit' onClick={createRoom}>Create</button>
+			</form>
+		</div>
 	);
 };
 

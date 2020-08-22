@@ -23,10 +23,7 @@ const deleteRoom = room_id => {
 }
 
 const getRoomByUserID = user_id => {
-	const room = [...rooms.entries()].find(r => {
-		const user = r[1].users.get(user_id);
-		return Boolean(user);
-	});
+	const room = [...rooms.entries()].find(r => Boolean(r[1].users.get(user_id)));
 	return room ? { room:room[1] } : { err: `could not find such room` };
 };
 
