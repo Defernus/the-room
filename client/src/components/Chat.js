@@ -60,7 +60,8 @@ const Chat = ({location}) => {
 	return (
 		<div className='room-container'>
 			<div className='room-info'>
-				<h1>{room_name} {name}</h1>
+				<h1>room: {room_name} your name: {name}</h1>
+				<p>to invite your friends use https://defernus.com:3535/join-room?room_id={room_id}</p>
 			</div>
 
 			<div className='room-messages'>
