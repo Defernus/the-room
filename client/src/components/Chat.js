@@ -78,7 +78,7 @@ const Chat = ({location}) => {
 			<div className='room-container'>
 				<div className='chat-container'>
 					<Header room_name={room_name} room_id={room_id} />
-					<Messages messages={messages} />
+					<Messages messages={messages} name={name} />
 					<Input message={message} setMessage={setMessage} sendMessage={sendMessage} />
 				</div>
 			</div>
