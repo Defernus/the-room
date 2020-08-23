@@ -24,6 +24,10 @@ io.on('connection', (socket) => {
 			return cb({err});
 		}
 
+		if( typeof room_id != 'string' ) {
+			return cb({ err: 'type error' });
+		}
+
 		let room = getRoom(room_id);
 
 		if(!room) {
