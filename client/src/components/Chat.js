@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import queryString from 'query-string';
 import io from 'socket.io-client';
-import Loader from 'react-loader-spinner';
 
 
 import SOCKET_ENDPOINT from './Endpoint'
+
+import Header from './Header'
 import Messages from './Messages'
+import Input from './Input'
+import Loading from './Loading'
 
 
 let socket;
@@ -20,6 +23,7 @@ const Chat = ({location}) => {
 	const [messages, setMessages] = useState([]);
 
 	useEffect(() => {
+		//get username and room id from url
 		const {room_id, name} = queryString.parse(location.search);
 
 		setName(name);
@@ -47,7 +51,7 @@ const Chat = ({location}) => {
 	}, [messages]);
 
 	const sendMessage = event => {
-		socket.emit('sendMessage', { text: message.text }, err => {
+		socket.emit('sendMessage', { text: message }, err => {
 			if(err) {
 				//TODO handle errors
 				setRoomErr(err);
@@ -72,29 +76,10 @@ const Chat = ({location}) => {
 	if(room_name) {
 		return (
 			<div className='room-container'>
-				<div className='room-info'>
-					<h1>room: {room_name} your name: {name}</h1>
-					<p>to invite your friends use https://defernus.com:3535/join-room?room_id={room_id}</p>
-				</div>
-
-				<Messages messages={messages} />
-
-				<div className='room-message-editor'>
-					<form className='form-message'>
-						<input
-							className='form-input-text form-input-left'
-							id='message-input'
-							type='text'
-							placeholder='Enter message'
-							onChange={event => setMessage({ from: name, text: event.target.value })}
-						/>
-						<button className='form-submit form-input-right' type='submit' onClick={event => {
-							event.preventDefault();
-							if(message) {
-								sendMessage(event);
-							}
-						}}>Send</button>
-					</form>
+				<div className='chat-container'>
+					<Header room_name={room_name} room_id={room_id} />
+					<Messages messages={messages} />
+					<Input message={message} setMessage={setMessage} sendMessage={sendMessage} />
 				</div>
 			</div>
 		);
@@ -102,14 +87,7 @@ const Chat = ({location}) => {
 
 	//loading page render
 	return (
-		<div className='container-center'>
-			<Loader
-				type="Puff"
-				color="#00BFFF"
-				height={100}
-				width={100}
-			/>
-		</div>
+		<Loading />
 	);
 };
 

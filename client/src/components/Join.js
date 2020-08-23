@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import queryString from 'query-string';
 import io from 'socket.io-client';
 import { Link } from 'react-router-dom';
-import Loader from 'react-loader-spinner';
 
 import Logo from './the-room.svg';
 
 import SOCKET_ENDPOINT from './Endpoint'
+
+import Loading from './Loading'
 
 let socket;
 
@@ -60,14 +61,7 @@ const Join = ({location}) => {
 
 	//loading page render
 	return (
-		<div className='container-center'>
-			<Loader
-				type="Puff"
-				color="#00BFFF"
-				height={100}
-				width={100}
-			/>
-		</div>
+		<Loading />
 	);
 };
 

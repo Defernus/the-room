@@ -137,23 +137,19 @@ input {
 }
 
 .form-input-left {
-	margin-bottom: -1px;
+	margin-right: -1px;
 	border-top-right-radius: 0;
 	border-bottom-right-radius: 0;
 }
 
 .form-input-right {
-	margin-bottom: -1px;
+	margin-left: -1px;
 	border-top-left-radius: 0;
 	border-bottom-left-radius: 0;
 }
 
 .form-message {
 	float: left;
-}
-
-.room-mesages {
-	width: auto;
 }
 
 .message-body {
@@ -163,6 +159,7 @@ input {
 	padding: 10px;
 	margin: 10px 20px;
 }
+
 .message-body::after {
 	content: "";
 	clear: both;
@@ -170,8 +167,120 @@ input {
 }
 
 .message-from {
-
 }
 
 .message-text {
+}
+
+
+.room-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+}
+
+.chat-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	border-radius: 8px;
+	height: 100%;
+	width: 100%;
+}
+
+.room-info {
+	background-color: #cef;
+	color: #000;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding-left: 10px;
+	height: 60px;
+	width: 100%;
+}
+
+.info-leave {
+	float: right;
+	padding-right: 10px;
+}
+
+.info-close-icon {
+	width: 32px;
+	width: 32px;
+}
+
+.info-invite {
+	margin-left: 20px;
+	width: 100%;
+	display:flex;
+}
+
+.info-invite-link {
+	width:100%;
+	max-width: 200px;
+
+	background-color: #fff;
+	border-radius: 5px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.messages-container {
+	overflow: auto;
+	flex: auto;
+}
+
+.room-message-editor {
+	display: flex;
+	border-top: 1px solid #ced4da;
+	padding: 0;
+	margin: 0;
+}
+
+
+
+.form-send {
+	display: inline-block;
+	width: 20vw;
+	height: 50px;
+	float: right;
+
+	font-family: inherit;
+	font-weight: 400;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	border: none;
+
+	font-size: 1.25rem;
+	line-height: 1.5;
+
+	color: #fff;
+	background-color: #007bff;
+
+	transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.form-input-message {
+	width: 80vw;
+	height: 50px;
+	float: left;
+
+	font-size: 1.25rem;
+	line-height: 1.5;
+	color: #495057;
+	border: none;
+}
+
+.form-send:hover {
+	background-color: #0060e0;
+}
+
+.form-send:focus:active {
+	background-color: #0050c0;
+}
+
+.form-input-message:focus, .form-send:focus {
+	outline: none;
 }
