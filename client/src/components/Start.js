@@ -25,7 +25,6 @@ const Start = () => {
 			return;
 		}
 
-		//TODO handle invalid params
 		if( name.length < 3 ) {
 			alert(`Name should be at least 3 characters long!`);
 			return;
@@ -37,8 +36,7 @@ const Start = () => {
 		}
 
 		socket.emit('create-room', {room_name:room}, ({ err, room_id }) => {
-			if(err) {
-				//TODO handle error, e.g. room name is alredy used or something
+			if(err) {//it will hapenned only if client was modified, i hope :)
 				alert(err);
 				return;
 			}

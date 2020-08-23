@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import queryString from 'query-string';
 import io from 'socket.io-client';
 import { Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
 import Logo from './the-room.svg';
 
@@ -40,9 +41,7 @@ const Join = ({location}) => {
 	//when some error happened   e.g. room does not exist
 	if(room_err) {
 		return(
-			<div>
-				<p>Failed to find room: {room_err}</p>
-			</div>
+			<Redirect to='/404' />
 		);
 	}
 

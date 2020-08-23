@@ -313,3 +313,13 @@ input {
 .err {
 	color: #700;
 }
+
+.notfound-message {
+	vertical-align: middle;
+	width: 100%;
+}
+
+.notfound-link {
+	vertical-align: middle;
+	width: 100%;
+}
