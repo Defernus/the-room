@@ -18,26 +18,21 @@ const Start = () => {
 		socket = io(SOCKET_ENDPOINT);
 	}, [SOCKET_ENDPOINT]);
 
-	const isValid = str => {
-		//TODO check if str is valid
-		return Boolean(str);
-	}
-
 	const createRoom = event => {
 		event.preventDefault();
 
-		if(!name) {
+		if(!name || !room) {
 			return;
 		}
 
 		//TODO handle invalid params
-		if( !isValid(name) ) {
-			alert(`name ${name} can not be used!`);
+		if( name.length < 3 ) {
+			alert(`Name should be at least 3 characters long!`);
 			return;
 		}
 
-		if( !isValid(room) ) {
-			alert(`room name ${room} can not be used!`);
+		if( room.length < 3 ) {
+			alert(`Room name should be at least 3 characters long!`);
 			return;
 		}
 
@@ -67,8 +62,8 @@ const Start = () => {
 			<form className='form-signin'>
 				<img className='form-logo' src={Logo} alt='The Room logo' />
 				<h1 className='form-label'>Create The Room!</h1>
-				<input className='form-input-text form-input-top' type='text' placeholder='Your name' onChange={event => setName(event.target.value)} />
-				<input className='form-input-text form-input-middle' type='text' placeholder='Room name' onChange={event => setRoom(event.target.value)}  />
+				<input className='form-input-text form-input-top' type='text' placeholder='Your name' maxlength='16' onChange={event => setName(event.target.value)} />
+				<input className='form-input-text form-input-middle' type='text' placeholder='Room name' maxlength='16' onChange={event => setRoom(event.target.value)}  />
 				
 				<button className='form-submit form-bottom' type='submit' onClick={createRoom}>Create</button>
 			</form>

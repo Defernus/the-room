@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import queryString from 'query-string';
 import io from 'socket.io-client';
+import { Redirect } from 'react-router-dom';
 
 
 import SOCKET_ENDPOINT from './Endpoint'
@@ -51,6 +52,11 @@ const Chat = ({location}) => {
 	}, [messages]);
 
 	const sendMessage = event => {
+		if(!message.split('').find(c => c!=' ')) {
+			event.preventDefault();
+			return;
+		}
+
 		socket.emit('sendMessage', { text: message }, err => {
 			if(err) {
 				//TODO handle errors
@@ -66,9 +72,7 @@ const Chat = ({location}) => {
 	//when some error happened   e.g. room does not exist or user name is alredy used
 	if(room_err) {
 		return (
-			<div>
-				<p>failed to join room: {room_err}</p>
-			</div>
+			<Redirect to={`/join-room?room_id=${room_id}&join_err=true`} />
 		);
 	}
 

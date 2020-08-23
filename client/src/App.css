@@ -171,6 +171,7 @@ input {
 	border-radius: 5px;
 	padding: 10px;
 	margin-left: 10px;
+	margin-right: 10px;
 	margin-bottom: 5px;
 	margin-top: 5px;
 }
@@ -307,4 +308,8 @@ input {
 
 .form-input-message:focus, .form-send:focus {
 	outline: none;
+}
+
+.err {
+	color: #700;
 }

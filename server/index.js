@@ -5,6 +5,8 @@ const http = require('http');
 const PORT = process.env.PORT || 2000
 
 const router = require('./router');
+const {checkName} = require('./checkName');
+const {checkMessage} = require('./checkMessage');
 const {createRoom, getRoom, deleteRoom, getRoomByUserID} = require('./rooms');
 
 const app = express();
@@ -16,12 +18,13 @@ app.use(router);
 io.on('connection', (socket) => {
 	
 	socket.on('join', ({ room_id, user_name }, cb) => {
+		let err = checkName(user_name);
 		//TODO check user name
-		if(!user_name) {
-			return cb({err: `user name is ${user_name}`});
+		if(err) {
+			return cb({err});
 		}
 
-		room = getRoom(room_id);
+		let room = getRoom(room_id);
 
 		if(!room) {
 			return cb({ err: `could not find room witch id ${room_id}` });
@@ -51,8 +54,9 @@ io.on('connection', (socket) => {
 	});
 
 	socket.on('sendMessage', ({ text }, cb) => {
-		if(!text) {
-			return cb({ err: `message is empty` });
+		let {err, message} = checkMessage(text);
+		if(err) {
+			return cb(err);
 		}
 
 		const room = getRoomByUserID(socket.id);
@@ -66,23 +70,24 @@ io.on('connection', (socket) => {
 			throw `could not find user with id ${socket.id} in the room ${room.id}`;
 		}
 
-		io.in(room.id).emit('message', { from: user.name, text });
+		io.in(room.id).emit('message', { from: user.name, text: message });
 
-		console.log(`message from user ${user.name} at the room ${room.id}: ${text}`);
+		console.log(`message from user ${user.name} at the room ${room.id}: ${message}`);
 
 		cb();
 	});
 
 	socket.on('create-room', ({ room_name }, cb) => {
 		//TODO check room name
-		if(!room_name) {
-			cb({ err: `empty room name` });
+		let err = checkName(room_name);
+		if(err) {
+			cb({ err });
 		}
 
-		let { err, room_id } = createRoom(room_name);
+		let { err_r, room_id } = createRoom(room_name);
 
-		if(err) {
-			return cb({ err });
+		if(err_r) {
+			return cb({ err_r });
 		}
 		console.log(`new room ${room_name} with id ${room_id} was created`);
 
@@ -101,7 +106,8 @@ io.on('connection', (socket) => {
 			return;
 		}
 
-		console.error(`user with id ${socket.id} left the room ${room.id}`);
+
+		console.log(`user with id ${socket.id} left the room ${room.id}`);
 	});
 });
 

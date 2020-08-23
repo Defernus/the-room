@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import CloseIcon from './close-icon.svg';
 
 const Header = ({room_name, room_id}) => {
-	const link = `https://defernus.com:3535/join-chat?room_id=${room_id}`;
+	const link = `https://defernus.com:3535/join-room?room_id=${room_id}`;
 
 	return (
 		<div className='room-info'>

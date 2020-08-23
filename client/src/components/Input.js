@@ -9,6 +9,7 @@ const Input = ({message, setMessage, sendMessage}) => (
 				id='message-input'
 				type='text'
 				placeholder='Enter message'
+				maxlength='4096'
 				onChange={event => setMessage(event.target.value)}
 			/>
 			<button className='form-send' type='submit' onClick={event => {
