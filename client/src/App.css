@@ -225,6 +225,7 @@ input {
 }
 
 .info-room-name {
+	max-width: 25%;
 	white-space: nowrap;
 }
 
@@ -239,6 +240,7 @@ input {
 }
 
 .info-invite {
+	white-space: nowrap;
 	margin-left: 20px;
 	width: 100%;
 	display:flex;
@@ -247,8 +249,10 @@ input {
 
 .info-invite-link {
 	width:100%;
-	max-width: 200px;
+	max-width: 400px;
+	min-width: 50px;
 
+	margin-right:10px;
 	background-color: #fff;
 	border-radius: 5px;
 	margin-left: 10px;
