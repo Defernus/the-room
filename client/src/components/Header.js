@@ -8,9 +8,9 @@ const Header = ({room_name, room_id}) => {
 
 	return (
 		<div className='room-info'>
-			<h1>{room_name}</h1>
+			<h1 className='info-room-name'>{room_name}</h1>
 			<div className='info-invite'>
-				<h2>invite link:</h2>
+				<h2>invite link</h2>
 				<input id='invite-link' className='info-invite-link' disabled="disabled" value={link} />
 			</div>
 			<Link to='/' className='info-leave'><img className='info-close-icon' src={CloseIcon} /></Link>
