@@ -1,4 +1,3 @@
-
 function Room(name, id) {
 	this.addUser = user => {
 		if( this.users.has(user.id) ) {

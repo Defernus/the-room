@@ -5,7 +5,6 @@ var last_id = 0;
 
 const createRoom = room_name => {
 	//TODO make better room id system
-
 	const room_id = `${++last_id}`;
 	let i = 0;
 

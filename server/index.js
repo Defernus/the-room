@@ -39,6 +39,11 @@ io.on('connection', (socket) => {
 		socket.join(room_id);
 
 		console.log(`new user ${user_name} has been added to room ${room.name}`);
+
+		if(room.rm_timeout) {// if room was empty clear delete timeout
+			clearTimeout(room.rm_timeout);
+			room.rm_timeout = 0;
+		}
 		
 		io.in(room_id).emit('message', { from: room.name, text: `Welcome, ${user_name}!` });
 
@@ -101,11 +106,20 @@ io.on('connection', (socket) => {
 			return;
 		}
 		
-		if(!room.users.delete(socket.id)) {
+		if(!room.users.delete(socket.id)) {//delete user from room
 			console.error(`failed to delete user with id ${socket.id} from room ${room.id}`);
 			return;
 		}
 
+		if(room.users.size === 0) {//if room is empty set timeout to delete it
+			console.log(`room ${room.id} is empty and will be deleted in 10 minutes!`);
+			room.rm_timeout = setTimeout(() => {
+				console.log(`room ${room.id} is empty and will be deleted!`);
+				if(!deleteRoom(room.id)) {
+					console.error(`failed to delete room ${room.id}`);
+				}
+			}, 600000);//after 10 minutes
+		}
 
 		console.log(`user with id ${socket.id} left the room ${room.id}`);
 	});
