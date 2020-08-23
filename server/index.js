@@ -15,8 +15,6 @@ app.use(router);
 
 io.on('connection', (socket) => {
 	
-	console.log(`user ${socket.id} connected`);
-
 	socket.on('join', ({ room_id, user_name }, cb) => {
 		//TODO check user name
 		if(!user_name) {
@@ -57,10 +55,10 @@ io.on('connection', (socket) => {
 			return cb({ err: `message is empty` });
 		}
 
-		let { err, room } = getRoomByUserID(socket.id);
+		const room = getRoomByUserID(socket.id);
 
-		if(err) {
-			return cb(err);
+		if(!room) {
+			return cb(`could not find the room`);
 		}
 
 		user = room.users.get(socket.id);
@@ -70,7 +68,7 @@ io.on('connection', (socket) => {
 
 		io.in(room.id).emit('message', { from: user.name, text });
 
-		console.log(`message from user ${user.name} at room ${room.name}: ${text}`);
+		console.log(`message from user ${user.name} at the room ${room.id}: ${text}`);
 
 		cb();
 	});
@@ -92,7 +90,18 @@ io.on('connection', (socket) => {
 	});
 
 	socket.on('disconnect', () => {
-		console.log(`user ${socket.id} just left`);
+		const room = getRoomByUserID(socket.id);
+
+		if(!room) {
+			return;
+		}
+		
+		if(!room.users.delete(socket.id)) {
+			console.error(`failed to delete user with id ${socket.id} from room ${room.id}`);
+			return;
+		}
+
+		console.error(`user with id ${socket.id} left the room ${room.id}`);
 	});
 });
 
